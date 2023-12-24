@@ -1,0 +1,236 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.38.0.0
+Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Simona Catanoiu, Simona SRL, LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.38.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.19
+Assembler:       Armasm.exe V6.19
+Linker/Locator:  ArmLink.exe V6.19
+Library Manager: ArmAr.exe V6.19
+Hex Converter:   FromElf.exe V6.19
+CPU DLL:         SARMCM3.DLL V5.38.0.0
+Dialog DLL:      DARMCM1.DLL V1.19.6.0
+Target DLL:      CMSIS_AGDI.dll V1.33.15.0
+Dialog DLL:      TARMCM1.DLL V1.14.6.0
+ 
+<h2>Project:</h2>
+C:\Users\Simona\Desktop\Proiect Micro\Keil Proiect\proiect.uvprojx
+Project File Date:  12/07/2023
+
+<h2>Output:</h2>
+*** Using Compiler 'V6.19', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
+Rebuild target 'Target 1'
+compiling system_MKL25Z4.c...
+pit.c(1): warning: In file included from...
+./pit.h(4): warning: no newline at end of file [-Wnewline-eof]
+void PIT_IRQHandler(void);
+                          ^
+pit.c(2): warning: non-portable path to file '"uart.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+#include "Uart.h"
+         ^~~~~~~~
+         "uart.h"
+pit.c(2): warning: In file included from...
+./Uart.h(3): warning: // comments are not allowed in this language [-Wcomment]
+#define GPIO_CHANGE_FLAG 17 //POT SA PUN 17 deoarece nu exista caracter ascii cu aceasta valoare
+                            ^
+pit.c(3): warning: In file included from...
+./gpio.h(3): warning: // comments are not allowed in this language [-Wcomment]
+#define RED_LED_PIN (18) //PORT B PIN 18
+                         ^
+./gpio.h(9): warning: no newline at end of file [-Wnewline-eof]
+void GPIO_change_seq(void);
+                           ^
+pit.c(11): warning: // comments are not allowed in this language [-Wcomment]
+        // Setarea valoarea numaratorului de pe canalul 0 la o perioada de 275 ms
+        ^
+pit.c(30): warning: no newline at end of file [-Wnewline-eof]
+}
+ ^
+7 warnings generated.
+compiling pit.c...
+gpio.c(1): warning: In file included from...
+./gpio.h(3): warning: // comments are not allowed in this language [-Wcomment]
+#define RED_LED_PIN (18) //PORT B PIN 18
+                         ^
+./gpio.h(9): warning: no newline at end of file [-Wnewline-eof]
+void GPIO_change_seq(void);
+                           ^
+gpio.c(3): warning: no previous extern declaration for non-static variable 'state' [-Wmissing-variable-declarations]
+uint8_t state=0;
+        ^
+gpio.c(3): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+uint8_t state=0;
+^
+gpio.c(4): warning: no previous extern declaration for non-static variable 'flag' [-Wmissing-variable-declarations]
+uint8_t flag=0;
+        ^
+gpio.c(4): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+uint8_t flag=0;
+^
+gpio.c(5): warning: no previous extern declaration for non-static variable 'seq1' [-Wmissing-variable-declarations]
+const uint8_t seq1[] = {0, 1, 2, 3, 4};
+              ^
+gpio.c(5): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+const uint8_t seq1[] = {0, 1, 2, 3, 4};
+      ^
+gpio.c(6): warning: no previous extern declaration for non-static variable 'seq2' [-Wmissing-variable-declarations]
+const uint8_t seq2[] = {4, 3, 2, 1, 0};
+              ^
+gpio.c(6): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+const uint8_t seq2[] = {4, 3, 2, 1, 0};
+      ^
+gpio.c(22): warning: // comments are not allowed in this language [-Wcomment]
+        //  state=1-> white on   state=2 -> green on    state=3  -> blue on  state=4 -> purple on
+        ^
+gpio.c(85): warning: no newline at end of file [-Wnewline-eof]
+}
+ ^
+8 warnings generated.
+compiling gpio.c...
+main.c(1): warning: In file included from...
+./uart.h(3): warning: // comments are not allowed in this language [-Wcomment]
+#define GPIO_CHANGE_FLAG 17 //POT SA PUN 17 deoarece nu exista caracter ascii cu aceasta valoare
+                            ^
+main.c(2): warning: In file included from...
+./gpio.h(3): warning: // comments are not allowed in this language [-Wcomment]
+#define RED_LED_PIN (18) //PORT B PIN 18
+                         ^
+./gpio.h(9): warning: no newline at end of file [-Wnewline-eof]
+void GPIO_change_seq(void);
+                           ^
+main.c(3): warning: In file included from...
+./pit.h(4): warning: no newline at end of file [-Wnewline-eof]
+void PIT_IRQHandler(void);
+                          ^
+main.c(9): warning: // comments are not allowed in this language [-Wcomment]
+        //PIT_Init();
+        ^
+5 warnings generated.
+compiling main.c...
+assembling startup_MKL25Z4.s...
+utils.c(1): warning: In file included from...
+./utils.h(5): warning: no newline at end of file [-Wnewline-eof]
+uint8_t invert_data(uint8_t data);
+                                  ^
+utils.c(17): warning: // comments are not allowed in this language [-Wcomment]
+//aceeasi functie dar scrisa din nou ca sa ma ajute sa citesc
+^
+utils.c(35): warning: no newline at end of file [-Wnewline-eof]
+}
+ ^
+3 warnings generated.
+compiling utils.c...
+uart.c(1): warning: In file included from...
+./uart.h(3): warning: // comments are not allowed in this language [-Wcomment]
+#define GPIO_CHANGE_FLAG 17 //POT SA PUN 17 deoarece nu exista caracter ascii cu aceasta valoare
+                            ^
+uart.c(2): warning: In file included from...
+./utils.h(5): warning: no newline at end of file [-Wnewline-eof]
+uint8_t invert_data(uint8_t data);
+                                  ^
+uart.c(3): warning: In file included from...
+./gpio.h(3): warning: // comments are not allowed in this language [-Wcomment]
+#define RED_LED_PIN (18) //PORT B PIN 18
+                         ^
+./gpio.h(9): warning: no newline at end of file [-Wnewline-eof]
+void GPIO_change_seq(void);
+                           ^
+uart.c(6): warning: no previous extern declaration for non-static variable 'write_index' [-Wmissing-variable-declarations]
+uint8_t write_index=0;
+        ^
+uart.c(6): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+uint8_t write_index=0;
+^
+uart.c(7): warning: no previous extern declaration for non-static variable 'read_index' [-Wmissing-variable-declarations]
+uint8_t read_index=0;
+        ^
+uart.c(7): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+uint8_t read_index=0;
+^
+uart.c(8): warning: no previous extern declaration for non-static variable 'osr' [-Wmissing-variable-declarations]
+uint16_t osr = OSR;
+         ^
+uart.c(8): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+uint16_t osr = OSR;
+^
+uart.c(10): warning: no previous extern declaration for non-static variable 'gpio_message' [-Wmissing-variable-declarations]
+uint8_t gpio_message[]="GPIO SEQUENCE CHANGED";
+        ^
+uart.c(10): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+uint8_t gpio_message[]="GPIO SEQUENCE CHANGED";
+^
+uart.c(11): warning: no previous extern declaration for non-static variable 'gpio_message_size' [-Wmissing-variable-declarations]
+uint8_t gpio_message_size=21;
+        ^
+uart.c(11): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+uint8_t gpio_message_size=21;
+^
+uart.c(12): warning: no previous extern declaration for non-static variable 'gpio_message_index' [-Wmissing-variable-declarations]
+uint8_t gpio_message_index=0;
+        ^
+uart.c(12): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+uint8_t gpio_message_index=0;
+^
+uart.c(13): warning: no previous extern declaration for non-static variable 'gpio_message_flag' [-Wmissing-variable-declarations]
+uint8_t gpio_message_flag=0;
+        ^
+uart.c(13): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+uint8_t gpio_message_flag=0;
+^
+uart.c(17): warning: // comments are not allowed in this language [-Wcomment]
+        //PIT Transmit logic
+        ^
+uart.c(15): warning: unused parameter 'data' [-Wunused-parameter]
+void UART0_Transmit(uint8_t data)
+                            ^
+uart.c(5): warning: no previous extern declaration for non-static variable 'buffer' [-Wmissing-variable-declarations]
+uint8_t buffer[128];
+        ^
+uart.c(5): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+uint8_t buffer[128];
+^
+14 warnings generated.
+compiling uart.c...
+linking...
+Program Size: Code=2296 RO-data=224 RW-data=28 ZI-data=488  
+".\Objects\proiect.axf" - 0 Error(s), 37 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.9.0.pack
+                ARM.CMSIS.5.9.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.6.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.Kinetis_KLxx_DFP.1.15.0.pack
+                Keil.Kinetis_KLxx_DFP.1.15.0
+                NXP Kinetis KLxx Series Device Support and Examples
+   * Component: Startup Version: 2.5.0
+
+<h2>Collection of Component include folders:</h2>
+  ./RTE/Device/MKL25Z128xxx4
+  ./RTE/_Target_1
+  C:/Users/Simona/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include
+  C:/Users/Simona/AppData/Local/Arm/Packs/Keil/Kinetis_KLxx_DFP/1.15.0/Device/Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.6.0
+
+   * Component: Keil::Device:Startup:2.5.0
+      Source file:   Device/Source/ARM/startup_MKL25Z4.s
+      Source file:   Device/Source/system_MKL25Z4.c
+      Include file:  Device/Source/system_MKL25Z4.h
+Build Time Elapsed:  00:00:01
+</pre>
+</body>
+</html>
