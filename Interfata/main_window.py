@@ -1,8 +1,9 @@
 from PySide6.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QGroupBox, QLabel, QPushButton, QLineEdit, QTextEdit
 from PySide6.QtGui import QIcon, QPalette, QColor, QFont
 from PySide6.QtCore import Qt,QThread,Signal
-from serial_controller import find_and_connect_serial_port,send_ledTrigger_to_serial,send_data_to_serial,read_data_from_serial
+from serial_controller import find_and_connect_serial_port,send_ledTrigger_to_serial,send_data_to_serial,read_data_from_serial,read_adc_value
 import pyqtgraph as pg
+import time
 
 class SerialReceiverThread(QThread):
     received_signal = Signal(str)
@@ -16,6 +17,19 @@ class SerialReceiverThread(QThread):
             output = read_data_from_serial(self.serial_conn)
             self.received_signal.emit(output)
 
+class ADCThread(QThread):
+    adc_value_received = Signal(int)
+
+    def __init__(self, serial_conn):
+        super().__init__()
+        self.serial_conn = serial_conn
+
+    def run(self):
+        while True:
+            adc_value = read_adc_value()
+            self.adc_value_received.emit(adc_value)
+            time.sleep(1)
+
 
 class MainWindow(QMainWindow):
     promotie: str = "2023-2024"
@@ -23,11 +37,13 @@ class MainWindow(QMainWindow):
         "Catanoiu Simona",
         "Dumitrascu Andreea",
     ]
+    seconds = []
+    light_value = []
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle(f"Proiect Microprocesoare {self.promotie}")
         self.setWindowIcon(QIcon("./icon.png"))
-        
 
         primary_layout = QVBoxLayout()
         secondary_layout = QHBoxLayout()
@@ -72,13 +88,10 @@ class MainWindow(QMainWindow):
         tertiary_layout.addWidget(team_box, 1)
         tertiary_layout.addWidget(control_panel_box,5)
 
-        plot_widget = pg.PlotWidget()
-        hour = [1,2,3,4,5,6,7,8,9,10]
-        temperature = [30,32,34,32,33,31,29,32,35,45]
+        self.plot_widget = pg.PlotWidget()
+        self.plot_widget.plot(self.seconds, self.light_value)
 
-        plot_widget.plot(hour, temperature)
-
-        secondary_layout.addWidget(plot_widget, 3)
+        secondary_layout.addWidget(self.plot_widget, 3)
         secondary_layout.addLayout(tertiary_layout, 1)
 
         primary_layout.addLayout(secondary_layout, 4)
@@ -108,6 +121,10 @@ class MainWindow(QMainWindow):
         self.serial_thread.received_signal.connect(self.receive_output)
         self.serial_thread.start()
 
+        self.adc_thread = ADCThread(self.serial_conn)
+        self.adc_thread.adc_value_received.connect(self.update_plot)
+        self.adc_thread.start()
+
     def send_input(self):
         input = self.line_edit.text()
         self.line_edit.clear()
@@ -123,3 +140,29 @@ class MainWindow(QMainWindow):
 
     def button2_action(self):
         send_ledTrigger_to_serial(self.serial_conn,18)
+
+    def update_plot(self, adc_value):
+        plot_value = adc_value
+        if plot_value != -1:
+            self.light_value.append(plot_value)
+            self.seconds.append(len(self.light_value))
+
+            if plot_value > 3000:
+                color = (255, 0, 0)
+            elif plot_value > 1000:
+                color = (0, 255, 0) 
+            else:
+                color = (255, 255, 0)
+            
+            if len(self.seconds) > 1:
+                x_start, x_end = self.seconds[-2], self.seconds[-1]
+                y_start, y_end = self.light_value[-2], self.light_value[-1]
+                line_segment = pg.PlotCurveItem(x=[x_start, x_end], y=[y_start, y_end], pen=pg.mkPen(color=color, width=2))
+                self.plot_widget.addItem(line_segment)
+                
+            self.plot_widget.getPlotItem().getViewBox().setYRange(0, 6000)
+
+            if len(self.seconds) > 60:
+                self.light_value.clear()
+                self.seconds.clear()
+                self.plot_widget.clear()

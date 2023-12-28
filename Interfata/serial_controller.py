@@ -3,6 +3,7 @@ import serial.tools.list_ports
 
 baud_rate=9600
 timeout=1
+plot_value = -1
 
 def find_open_serial_port():
     #parcurge toate porturile seriale (/dev/ttyS*) dev/ttyS5<=>COM5
@@ -40,16 +41,34 @@ def find_and_connect_serial_port():
     serial_conn=connect_to_serial_port(port)
     return serial_conn
 
+def read_adc_value():
+    global plot_value
+    ret_value = plot_value
+    return ret_value
 def read_data_from_serial(serial_conn):
+    global plot_value
     try:
         if serial_conn is not None and serial_conn.is_open:
             while True:
                 try:
-                    data = serial_conn.readline().decode('ascii')
-                    if data:
+                    data_raw = serial_conn.readline()
+                    print(data_raw)
+                    if(data_raw!=b'' and data_raw!=b'\r'):
+                       if b'\x19' in data_raw:
+                        #Daca apare valoarea x12 inseamna ca am trimisa valoarea de plotat de la ADC
+                        start_index = data_raw.index(b'\x19')
+                        end_index = data_raw.index(b'\x19', start_index + 1)
+                        #Extrag valoarea de la ADC
+                        adc_value = int(data_raw[start_index + 1:end_index].decode('ascii'))
+                        plot_value= adc_value
+                        #Pot sa am si un mesaj sau input in afara de valoarea de ADC -> parsez
+                        data_raw = data_raw[:start_index] + data_raw[end_index + 1:]
+                        data = data_raw.decode('ascii')
+                       if data:
                         print(f"Received: {data}")
                         return data
-                except:
+                except Exception as e:
+                    print(f"Error: {str(e)}")
                     print("Non ASCII data")
     except serial.SerialException as e:
         print(f"Error reading from serial port: {e}")

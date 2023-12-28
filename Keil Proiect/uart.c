@@ -2,22 +2,51 @@
 #include "utils.h"
 #include "gpio.h"
 
-uint8_t buffer[128];
-uint8_t write_index=0;
-uint8_t read_index=0;
+//uint8_t buffer[128];
+//uint8_t write_index=0;
+//uint8_t read_index=0;
 uint16_t osr = OSR;
 
 uint8_t gpio_message[]="GPIO SEQUENCE CHANGED";
 uint8_t gpio_message_size=21;
-uint8_t gpio_message_index=0;
 uint8_t gpio_message_flag=0;
 
-void UART0_Transmit(uint8_t data)
+void UART0_Transmit(uint8_t data) {
+	while(!(UART0->S1 & UART_S1_TDRE_MASK)) {}
+	if(!gpio_message_flag)
+		UART0->D = lsb_to_msb(data);
+	if(gpio_message_flag)
+	{
+		uint8_t gpio_message_index=0;
+		while(gpio_message_index<gpio_message_size)
+		{
+			while(!(UART0->S1 & UART_S1_TDRE_MASK)) {}
+			UART0->D = lsb_to_msb(gpio_message[gpio_message_index]);
+			gpio_message_index++;
+		}
+		gpio_message_flag=0;
+	}
+}
+
+void UART0_Transmit_ADC_val(uint16_t data)
 {
-	//PIT Transmit logic
-//	while (!(UART0->S1 & UART0_S1_TDRE_MASK)) {
-//	}
-//	UART0->D=lsb_to_msb(data);
+	  uint8_t letters[5];
+		int index=0;
+		while(data)
+		{
+			letters[index] = data%10+0x30;
+			data/=10;
+			index++;
+		}
+		index--;
+		
+		UART0_Transmit(ADC_START_END_TRANSMISSION);
+		while(index>=0)
+		{
+			UART0_Transmit(letters[index--]);	
+		}
+		
+    UART0_Transmit(ADC_START_END_TRANSMISSION);
 }
 
 
@@ -50,22 +79,21 @@ void UART0_Initialize(uint32_t baud_rate) {
 	//TX Inverted
 	//UART0->C3 |= UART0_C3_TXINV_MASK;
 	
+	//UART0->C2 |= UART0_C2_TCIE(0);
+	UART0->C2 |= UART0_C2_RIE_MASK;;  //deschidem intreruperi pentru receive
 	
-	UART0->C2 |= UART0_C2_TCIE(0);
-	UART0->C2 |= UART0_C2_RIE_MASK |  UART0_C2_TIE_MASK;
-	
+	//deschidem re si te
 	UART0->C2 |= ((UART_C2_RE_MASK) | (UART_C2_TE_MASK));
 	
 	NVIC_ClearPendingIRQ(UART0_IRQn);
 	NVIC_SetPriority(UART0_IRQn,2);
 	NVIC_EnableIRQ(UART0_IRQn);
 	__enable_irq();
-	
 }
 
 
 void UART0_IRQHandler(void) {
-		if(UART0->S1 & UART0_S1_RDRF_MASK)//-> UART0_S1_RDRF_MASK spune ca bufferul de transimisie e full
+		if(UART0->S1 & UART0_S1_RDRF_MASK)
 		{
 			uint8_t data=UART0->D;
 			//Reverse LSB to MSB
@@ -74,8 +102,8 @@ void UART0_IRQHandler(void) {
 			//ENTER HANDLER
 			if(reverse_data==0x0D)
 			{
-				buffer[write_index++]=lsb_to_msb(0x0D);
-				buffer[write_index++]=lsb_to_msb(0x0A);
+				UART0_Transmit(0x0D);
+				UART0_Transmit(0x0A);
 			}
 			
 			//GPIO FLAG HANDLER
@@ -83,6 +111,7 @@ void UART0_IRQHandler(void) {
 			{
 				GPIO_change_seq();
 				gpio_message_flag=1;
+				UART0_Transmit(0);
 				return;
 			}
 			//GPIO CHANGE COLOR
@@ -93,26 +122,7 @@ void UART0_IRQHandler(void) {
 			}
 			else
 			{
-				buffer[write_index++]=data;
+				UART0_Transmit(reverse_data);
 			}
 		}
-		
-		//UART transmit data
-	  if((UART0->S1 & UART0_S1_TDRE_MASK) && (read_index<write_index))//-> UART0_S1_TDRE_MASK spune ca bufferul de transimisie e empty
-		{
-			UART0->D = buffer[read_index++];
-		} 
-		
-		//GPIO info message transmit 
-		if((UART0->S1 & UART0_S1_TDRE_MASK) && (gpio_message_flag==1))
-		{
-			UART0->D = lsb_to_msb(gpio_message[gpio_message_index]);
-			gpio_message_index++;
-			if(gpio_message_index>gpio_message_size)
-			{
-				gpio_message_flag=0;
-				gpio_message_index=0;
-			}
-		}
-		
 }
