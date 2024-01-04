@@ -88,6 +88,6 @@ void TPM2_Set_DutyCycle(uint16_t val)
 					duty_cycle = 0;
 			}
 			TPM2->CNT = 0x0000;
-			TPM2->MOD = 375 * 19;
-			TPM2->CONTROLS[0].CnV = 250 - 50*duty_cycle;
+			TPM2->MOD = 375 * 20;
+			TPM2->CONTROLS[0].CnV =100+duty_cycle*150;  //valori aproximativ calculate: 375 pt 0, 563 pentru 90 si 750 pentru 180 -> merge la jumatate din cauza ceasului de la UART cred
 }
