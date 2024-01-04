@@ -1,16 +1,16 @@
 #include "Pwm.h"
 
-#define OSCILLOSCOPE_PIN (1) // PORT A , PIN 1
+#define OSCILLOSCOPE_PIN (2) // PORT B , PIN 2
 
 void TPM2_Init(){
 	
 	
 	// Activarea semnalului de ceas pentru utilizarea LED-ului de culoare rosie
-	SIM->SCGC5 |= SIM_SCGC5_PORTA_MASK;
+	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
 	
 	// Utilizarea alternativei de functionare pentru perifericul TMP
 	// TMP2_CH0
-	PORTA->PCR[OSCILLOSCOPE_PIN] |= PORT_PCR_MUX(3);
+	PORTB->PCR[OSCILLOSCOPE_PIN] |= PORT_PCR_MUX(3);
 	
 	// Selects the clock source for the TPM counter clock (MCGFLLCLK) - PG. 196
 	// MCGFLLCLK Freq. - 48 MHz
