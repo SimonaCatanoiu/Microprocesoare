@@ -38,3 +38,6 @@ VMWare:
 VirtualBox:
 
 <img src="./doc/images/setup1.png" alt="VirtualBox" width="500" height="500"/>
+
+## Videoclip prezentare
+https://1drv.ms/v/s!ArAt-GPK5642iwyM5RiS01CmISQX?e=mfmfNx
